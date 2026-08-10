@@ -19,8 +19,9 @@ echo "Resolving uv dependencies..."
 uv sync
 
 # Copy the devcontainer settings boilerplate
-if [ ! -f ./fm_eventmanager/settings.py ]
-cp ./.devcontainer/settings.py.devcontainer ./fm_eventmanager/settings.py
+if [ ! -f ./fm_eventmanager/settings.py ]; then
+    cp ./.devcontainer/settings.py.devcontainer ./fm_eventmanager/settings.py
+fi
 
 # Set up the database schema
 echo "Running database migrations..."
