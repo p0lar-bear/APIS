@@ -1,0 +1,48 @@
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+    env_file:
+      - devcontainer.env
+      - devcontainer.database.env
+    volumes:
+      - ..:/apis:cached
+    command: sleep infinity
+
+  db:
+    image: postgres:18.4
+    restart: unless-stopped
+    volumes:
+      - postgres-data:/var/lib/postgresql
+    env_file: devcontainer.database.env
+
+  mail:
+    image: rnwood/smtp4dev:latest
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:stable-alpine
+    restart: unless-stopped
+    volumes:
+      - ./mqtt/nginx.conf:/etc/nginx/nginx.conf:ro
+
+  mosquitto:
+    build:
+      context: ..
+      dockerfile: .devcontainer/mqtt/Dockerfile.mqtt
+    restart: unless-stopped
+    ports:
+      - 1883
+      - 1884
+    volumes:
+      - ./mqtt/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+
+
+volumes:
+  postgres-data:
+
+
+networks:
+  apis_dev:
+    internal: true

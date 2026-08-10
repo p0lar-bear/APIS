@@ -1,0 +1,52 @@
+{
+	"name": "APIS Development",
+	"dockerComposeFile": "docker-compose.yml",
+	"service": "app",
+	"runServices": [
+		"db",
+		"mail",
+		"nginx",
+		"mosquitto"
+	],
+	"workspaceFolder": "/apis",
+	"postCreateCommand": "bash -i .devcontainer/postcreate.sh",
+	"features": {
+		"ghcr.io/devcontainers/features/node:2": {},
+		"ghcr.io/devcontainer-community/devcontainer-features/astral.sh-uv:1": {}
+	},
+	"mounts": [
+		{
+			"type": "volume",
+			"target": "${containerWorkspaceFolder}/.venv"
+		},
+		{
+			"type": "volume",
+			"target": "${containerWorkspaceFolder}/registration/frontend/node_modules"
+		}
+	],
+	"forwardPorts": [
+		8000,
+		"db:5432",
+		"mail:80",
+		"nginx:80"
+	],
+	"portsAttributes": {
+		"8000": {
+			"label": "Application",
+			"onAutoForward": "openBrowser"
+		},
+		"db:5432": {
+			"label": "PostgreSQL database",
+			"onAutoForward": "ignore"
+		},
+		"mail:80": {
+			"label": "Dummy Webmail",
+			"onAutoForward": "openBrowser"
+		},
+		"nginx:80": {
+			"label": "MQTT Broker",
+			"requireLocalPort": true,
+			"elevateIfNeeded": true
+		}
+	}
+}

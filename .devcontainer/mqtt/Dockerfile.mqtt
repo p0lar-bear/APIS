@@ -1,0 +1,12 @@
+FROM eclipse-mosquitto:2.0.22-openssl
+
+RUN ["apk", "update"]
+RUN ["apk", "add", "git", "cargo", "openssh-client"]
+RUN ["/bin/sh", "-c", "mkdir ~/.ssh"]
+RUN ["/bin/sh", "-c", "ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts"]
+WORKDIR /build
+RUN ["git", "clone", "https://github.com/wiomoc/mosquitto-jwt-auth.git"]
+WORKDIR /build/mosquitto-jwt-auth
+RUN ["cargo", "build", "--release"]
+RUN ["mkdir", "/etc/mosquitto", "/etc/mosquitto/auth"]
+RUN ["mv", "./target/release/libmosquitto_jwt_auth.so", "/etc/mosquitto/auth/libmosquitto_jwt_auth.so"]
